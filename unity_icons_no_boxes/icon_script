@@ -1,0 +1,28 @@
+#!/bin/bash
+
+ARCH="$1"
+
+UNITY="/usr/share/unity/icons"
+TMP="/tmp/unity_icons_no_boxes`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`"
+
+if [ $(id -u) != 0 ]; then
+	echo Script must be run as root
+	exit 1
+fi
+
+mkdir $TMP
+
+tar zxf $ARCH -C $TMP
+
+for file in $(ls -1 $TMP)
+do
+	if [ -f "$UNITY/$file" ]; then
+		cp "$UNITY/$file" "$UNITY/$file.bak"
+		cp "$TMP/$file" $UNITY
+		echo Patched $file
+	else
+		(>&2 echo Skipped $file)
+	fi
+done
+
+rm -rf $TMP
