@@ -1,7 +1,6 @@
 #!/bin/bash
 
-ARCH="$1"
-
+ARCH_URL="https://github.com/SamuelePilleri/snippets/raw/master/unity_icons_no_boxes/icons_no_boxes.tar.gz"
 UNITY="/usr/share/unity/icons"
 TMP="/tmp/unity_icons_no_boxes`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`"
 
@@ -12,9 +11,13 @@ fi
 
 mkdir $TMP
 
+wget -P $TMP $ARCH_URL
+
+ARCH="$TMP/$(basename $ARCH_URL)"
+
 tar zxf $ARCH -C $TMP
 
-for file in $(ls -1 $TMP)
+for file in $(ls -1 $TMP -I $ARCH)
 do
 	if [ -f "$UNITY/$file" ]; then
 		cp "$UNITY/$file" "$UNITY/$file.bak"
