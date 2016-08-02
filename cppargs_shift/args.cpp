@@ -10,9 +10,9 @@ using namespace std;
 
 inline string join(const vector<string>& vec, const char* delim)
 {
-    ostringstream res;
-    copy(vec.begin(), vec.end(), ostream_iterator<string>(res, delim));
-    return res.str();
+	ostringstream res;
+	copy(vec.begin(), vec.end(), ostream_iterator<string>(res, delim));
+	return res.str();
 }
 
 /**
@@ -30,7 +30,7 @@ constexpr unsigned int chash(char const *str)
 		5381;
 }
 
-void parse(int argc, char const *argv[], function<void( string&& param, function<string()> next )>&& callback )
+void parse(int argc, char const *argv[], function<void( char const *param, function<string()> next )>&& callback )
 {
 	int i = 1;
 	
@@ -40,11 +40,11 @@ void parse(int argc, char const *argv[], function<void( string&& param, function
 	
 	while(i < argc)
 	{
-		callback(string(argv[i++]), n);
+		callback(argv[i++], n);
 	}
 }
 
-void parse(int argc, char const *argv[], function<void( string&& param, function<string()> next, function<string()> peek )>&& callback )
+void parse(int argc, char const *argv[], function<void( char const *param, function<string()> next, function<string()> peek )>&& callback )
 {
 	int i = 1;
 	
@@ -58,15 +58,15 @@ void parse(int argc, char const *argv[], function<void( string&& param, function
 	
 	while(i < argc)
 	{
-		callback(string(argv[i++]), n, p);
+		callback(argv[i++], n, p);
 	}
 }
 
 int main(int argc, char const *argv[])
 {
 	vector<string> ax;
-	parse(argc, argv, [&ax](string&& param, function<string()> next){
-		switch(chash(param.c_str()))
+	parse(argc, argv, [&ax](char const *param, function<string()> next){
+		switch(chash(param))
 		{
 			case chash("-e"):
 			case chash("--experimental"):
@@ -89,7 +89,7 @@ int main(int argc, char const *argv[])
 				break;
 			
 			default:
-				ax.push_back(param);
+				ax.push_back(string(param));
 				break;
 		}
 	});
@@ -99,8 +99,8 @@ int main(int argc, char const *argv[])
 	printf("--------------------------------------------------------------------------------\n");
 
 	vector<string> eax;
-	parse(argc, argv, [&](string&& param, function<string()> next, function<string()> peek){
-		switch(chash(param.c_str()))
+	parse(argc, argv, [&](char const *param, function<string()> next, function<string()> peek){
+		switch(chash(param))
 		{
 			case chash("-e"):
 			case chash("--experimental"):
@@ -123,7 +123,7 @@ int main(int argc, char const *argv[])
 				break;
 			
 			default:
-				eax.push_back(param);
+				eax.push_back(string(param));
 				break;
 		}
 	});
