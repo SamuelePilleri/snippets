@@ -12,7 +12,7 @@ def bonifica(infile: str, outfile: str):
         incsv = open(infile, 'r', encoding='utf-8')
         outcsv = open(outfile, 'w', encoding='utf-8', newline='')
         reader = csv.reader(incsv, delimiter=';', quotechar='"')
-        writer = csv.writer(outcsv, delimiter=';', quotechar='"', quoting=csv.QUOTE_ALL)
+        writer = csv.writer(outcsv, delimiter=';', quotechar='"')
         reconstructed_row = next(reader)
         length = len(reconstructed_row)
         writer.writerow(list(reconstructed_row))
@@ -32,7 +32,7 @@ def bonifica(infile: str, outfile: str):
                 reconstructed_row = []
         tk.Label(text="Elaborazione conclusa con successo").pack()
     except Exception as e:
-        tk.Label(text=f"Errore durente l'elaborazione dei dati: {e}").pack()
+        tk.Label(text=f"Errore durante l'elaborazione dei dati: {e}").pack()
     finally:
         if incsv != None:
             incsv.close()
@@ -42,7 +42,7 @@ def bonifica(infile: str, outfile: str):
 
 def main():
     window = tk.Tk()
-    window.title("CSV merda")
+    window.title("CSV fixer")
     
     infile = filedialog.askopenfilename(filetypes=[("File CSV", "*.csv"), ("Tutti i file", "*.*")])
     tk.Label(text=f"File sorgente: {infile}").pack()

@@ -24,14 +24,17 @@ async def download_and_send(self: TelegramClient, chat_id: str, url: str, filena
         progress = sent
         timestamp = new_ts
 
-    with requests.get(url, stream=True) as r:
-        # r.raw.decode_content = True # https://stackoverflow.com/a/60846477 (comments)
+    with requests.get(url, stream=True, headers={"Accept-Encoding":"identity;q=1, *;q=0"}) as r:
         tgfile = await self.upload_file(
             r.raw,
             file_name=filename,
             file_size=int(r.headers['Content-length']),
             progress_callback=speed_callback
         )
+        try:
+            chat_id = int(chat_id)
+        except:
+            pass
         await self.send_file(chat_id, tgfile, caption=caption)
 
 
@@ -55,6 +58,7 @@ def main():
             filename = job.get("filename", basename(urlparse(url).path))
             caption = job.get("caption", "")
             client.loop.run_until_complete(client.download_and_send(chat_id, url, filename, caption))
+            print()
 
 
 if __name__ == "__main__":
